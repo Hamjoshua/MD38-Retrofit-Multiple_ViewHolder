@@ -2,11 +2,17 @@ package com.example.retrofitforecaster
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -18,12 +24,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        CoroutineScope(Dispatchers.IO).launch{
-            val daysApi = RetrofitHelper.getInstance().create(DayGetter::class.java)
+        val rView: RecyclerView = findViewById<RecyclerView>(R.id.r_view)
+        rView.layoutManager = LinearLayoutManager(this)
+        val daysApi = RetrofitHelper.getInstance().create(DayGetter::class.java)
 
+        val coroutineExceptionHandler = CoroutineExceptionHandler{_, throwable ->
+            throwable.printStackTrace()
+        }
+
+        GlobalScope.launch(Dispatchers.IO + coroutineExceptionHandler){
             val days = daysApi.check()
-            if(days != null){
 
+            withContext(Dispatchers.Main){
+                if(days.body() != null){
+                    Log.d("Days go by", days.body().toString())
+                    val adapter : DayListAdapter = DayListAdapter()
+                    adapter.submitList(days.body()?.list?.toMutableList())
+                    rView.adapter = adapter
+                }
             }
         }
 
