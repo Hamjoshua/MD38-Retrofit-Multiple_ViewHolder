@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,22 +28,27 @@ class DayListAdapter() : ListAdapter<DayPrognosis, DayViewHolder>(DayDiffCallbac
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         val day = currentList[position]
 
-        holder.datetime.text = day.dt_text
-        if(day.main.temp < 0){
-            holder.minusTxt.text = day.main.temp.toString()
+        holder.datetime.setText(day.dt_txt)
+
+        val celcia = day.main.temp
+
+        if(celcia < 0){
+            holder.minusTxt.setText(celcia.toString())
+            holder.plusTxt.setText("")
         }
         else{
-            holder.plusTxt.text = day.main.temp.toString()
+            holder.plusTxt.setText(celcia.toString())
+            holder.minusTxt.setText("")
         }
-        Glide.with(holder.icon).load("https://openweathermap.org/" +
-                "img/wn/${day.weather[0].icon}@2x.png").into(holder.icon)
+        val address = "https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png"
+        Glide.with(holder.icon).load(address).into(holder.icon)
 
     }
 }
 
 class DayDiffCallback : DiffUtil.ItemCallback<DayPrognosis>() {
     override fun areItemsTheSame(oldItem: DayPrognosis, newItem: DayPrognosis): Boolean {
-        return oldItem.dt_text == newItem.dt_text;
+        return oldItem.dt_txt == newItem.dt_txt;
     }
 
     override fun areContentsTheSame(oldItem: DayPrognosis, newItem: DayPrognosis): Boolean {

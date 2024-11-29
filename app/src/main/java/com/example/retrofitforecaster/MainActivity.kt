@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 interface DayGetter {
-    @GET("forecast?q=Shklov,by&appid=${BuildConfig.API_KEY_OPEN_WEATHER_MAP}")
+    @GET("forecast?q=Shklov,by&appid=${BuildConfig.API_KEY_OPEN_WEATHER_MAP}&units=metric")
     suspend fun check() : Response<DataResponce>
 }
 
@@ -70,7 +70,7 @@ data class Weather(
     @SerializedName("icon") val icon: String
 )
 data class DayPrognosis (
-    @SerializedName("dt_text") val dt_text: String,
+    @SerializedName("dt_txt") val dt_txt: String,
     @SerializedName("main") val main: Main,
     @SerializedName("weather") val weather: ArrayList<Weather>
 )
