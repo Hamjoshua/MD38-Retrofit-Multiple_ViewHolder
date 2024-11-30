@@ -24,7 +24,7 @@ class DayListAdapter() : ListAdapter<DayPrognosis, ViewHolder>(DayDiffCallback()
         fun bind(position: Int) {
             val hotDay: DayPrognosis = currentList[position]
             datetime.setText(hotDay.dt_txt)
-            plusTxt.setText(hotDay.main.temp.toString());
+            plusTxt.setText(hotDay.main.getTempAsString());
             val address = "https://openweathermap.org/img/wn/${hotDay.weather[0].icon}@2x.png"
             Glide.with(icon).load(address).into(icon)
         }
@@ -38,7 +38,7 @@ class DayListAdapter() : ListAdapter<DayPrognosis, ViewHolder>(DayDiffCallback()
         fun bind(position: Int) {
             val coldDay: DayPrognosis = currentList[position]
             datetime.setText(coldDay.dt_txt)
-            minusTxt.setText(coldDay.main.temp.toString());
+            minusTxt.setText(coldDay.main.getTempAsString());
             val address = "https://openweathermap.org/img/wn/${coldDay.weather[0].icon}@2x.png"
             Glide.with(icon).load(address).into(icon)
         }

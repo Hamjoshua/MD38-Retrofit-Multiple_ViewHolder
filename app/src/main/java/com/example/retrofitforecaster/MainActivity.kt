@@ -64,7 +64,11 @@ object RetrofitHelper {
 
 data class Main(
     @SerializedName("temp") val temp: Double
-)
+){
+    fun getTempAsString() : String{
+        return "${temp}° C"
+    }
+}
 data class Weather(
     @SerializedName("main") val main: String,
     @SerializedName("icon") val icon: String
