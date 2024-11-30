@@ -30,14 +30,12 @@ class DayListAdapter() : ListAdapter<DayPrognosis, DayViewHolder>(DayDiffCallbac
 
         holder.datetime.setText(day.dt_txt)
 
-        val celcia = day.main.temp
-
-        if(celcia < 0){
-            holder.minusTxt.setText(celcia.toString())
+        if(day.main.temp < 0){
+            holder.minusTxt.setText(day.main.getTempAsString())
             holder.plusTxt.setText("")
         }
         else{
-            holder.plusTxt.setText(celcia.toString())
+            holder.plusTxt.setText(day.main.getTempAsString())
             holder.minusTxt.setText("")
         }
         val address = "https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png"
