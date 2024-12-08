@@ -3,6 +3,7 @@ package com.example.retrofitforecaster
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setSupportActionBar(findViewById(R.id.toolbar))
+        getSupportActionBar()?.setTitle("Shklov")
+
         val rView: RecyclerView = findViewById<RecyclerView>(R.id.r_view)
         rView.layoutManager = LinearLayoutManager(this)
         val daysApi = RetrofitHelper.getInstance().create(DayGetter::class.java)
@@ -44,7 +48,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar, menu)
+
+        return true
     }
 }
 
