@@ -3,6 +3,7 @@ package com.example.retrofitforecaster
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -24,21 +25,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setSupportActionBar(findViewById(R.id.toolbar))
+        getSupportActionBar()?.setTitle("Shklov")
+
         val rView: RecyclerView = findViewById<RecyclerView>(R.id.r_view)
         rView.layoutManager = LinearLayoutManager(this)
         val daysApi = RetrofitHelper.getInstance().create(DayGetter::class.java)
 
-        val coroutineExceptionHandler = CoroutineExceptionHandler{_, throwable ->
+        val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
         }
 
-        GlobalScope.launch(Dispatchers.IO + coroutineExceptionHandler){
+        GlobalScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             val days = daysApi.check()
 
-            withContext(Dispatchers.Main){
-                if(days.body() != null){
+            withContext(Dispatchers.Main) {
+                if (days.body() != null) {
                     Log.d("Days go by", days.body().toString())
-                    val adapter : DayListAdapter = DayListAdapter()
+                    val adapter: DayListAdapter = DayListAdapter()
                     adapter.submitList(days.body()?.list?.toMutableList())
                     rView.adapter = adapter
                 }
@@ -46,11 +50,17 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar, menu)
+
+        return true
+    }
 }
 
 interface DayGetter {
     @GET("forecast?q=Shklov,by&appid=${BuildConfig.API_KEY_OPEN_WEATHER_MAP}&units=metric")
-    suspend fun check() : Response<DataResponce>
+    suspend fun check(): Response<DataResponce>
 }
 
 object RetrofitHelper {
@@ -64,16 +74,18 @@ object RetrofitHelper {
 
 data class Main(
     @SerializedName("temp") val temp: Double
-){
-    fun getTempAsString() : String{
+) {
+    fun getTempAsString(): String {
         return "${temp}° C"
     }
 }
+
 data class Weather(
     @SerializedName("main") val main: String,
     @SerializedName("icon") val icon: String
 )
-data class DayPrognosis (
+
+data class DayPrognosis(
     @SerializedName("dt_txt") val dt_txt: String,
     @SerializedName("main") val main: Main,
     @SerializedName("weather") val weather: ArrayList<Weather>
